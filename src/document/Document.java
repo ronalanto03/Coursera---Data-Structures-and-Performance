@@ -42,6 +42,25 @@ public abstract class Document {
 		return tokens;
 	}
 	
+	private boolean isVowel(char c) {
+		switch(c)
+		{
+		 case  'a' :
+		 case 'e'  :
+		 case 'i'   :
+		 case 'o'  :
+		 case 'u'  :
+		 case  'A' :
+		 case 'E'  :
+		 case 'I'   :
+		 case 'O'  :
+		 case 'U'  : 
+		 case 'y'  : 
+		 case 'Y'  :  return true;
+		}
+		return false;
+	}
+	
 	/** This is a helper function that returns the number of syllables
 	 * in a word.  You should write this and use it in your 
 	 * BasicDocument class.
@@ -67,7 +86,21 @@ public abstract class Document {
 		// TODO: Implement this method so that you can call it from the 
 	    // getNumSyllables method in BasicDocument (module 2) and 
 	    // EfficientDocument (module 3).
-	    return 0;
+		if (word.length() == 1 && isVowel(word.charAt(0))) {
+			return 1;
+		}
+		int numSyllables = 0;
+		for (int i = 0; i < word.length(); ++i) {
+			if (isVowel(word.charAt(i)) && (i == 0 || !isVowel(word.charAt(i- 1)))) {
+				numSyllables++;
+			}
+		}
+		
+		if (numSyllables > 1 && (word.charAt(word.length() - 1) == 'e' || word.charAt(word.length() - 1) == 'E') && !isVowel(word.charAt(word.length() - 2))) {
+			numSyllables--;
+		}
+		
+	    return numSyllables;
 	}
 	
 	/** A method for testing
@@ -130,9 +163,8 @@ public abstract class Document {
 	/** return the Flesch readability score of this document */
 	public double getFleschScore()
 	{
-	    // TODO: You will play with this method in week 1, and 
-		// then implement it in week 2
-	    return 0.0;
+		double numWords = getNumWords();
+	    return 206.835 - 1.015 * (numWords / (double)getNumSentences()) - 84.6 * ((double)getNumSyllables() / numWords);
 	}
 	
 	

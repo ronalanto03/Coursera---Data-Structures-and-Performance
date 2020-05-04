@@ -114,7 +114,17 @@ public class MyLinkedListTester {
 		assertEquals("Remove: check element 0 is correct ", (Integer)21, list1.get(0));
 		assertEquals("Remove: check size is correct ", 2, list1.size());
 		
-		// TODO: Add more tests here
+		try {
+			emptyList.remove(99);
+			fail();
+		} catch (IndexOutOfBoundsException e) {
+		}
+		
+		try {
+			shortList.remove(-1);
+			fail();
+		} catch (IndexOutOfBoundsException e) {
+		}
 	}
 	
 	/** Test adding an element into the end of the list, specifically
@@ -123,8 +133,9 @@ public class MyLinkedListTester {
 	@Test
 	public void testAddEnd()
 	{
-        // TODO: implement this test
-		
+		assertEquals("Remove: check size is correct ", 3, list1.size());
+		list1.add((Integer)10);
+		assertEquals("Remove: check size is correct ", 4, list1.size());
 	}
 
 	
@@ -132,7 +143,13 @@ public class MyLinkedListTester {
 	@Test
 	public void testSize()
 	{
-		// TODO: implement this test
+		assertEquals("Remove: check size is correct ", 3, list1.size());
+
+		list1.add(0, 1);
+		list1.remove(0);
+		list1.add(0, 1);
+
+		assertEquals("Remove: check size is correct ", 4, list1.size());
 	}
 
 	
@@ -144,16 +161,53 @@ public class MyLinkedListTester {
 	@Test
 	public void testAddAtIndex()
 	{
-        // TODO: implement this test
-		
+		Integer e1 = list1.get(0);
+		Integer e2 = list1.get(1);
+		list1.add(1, 209);
+		assertEquals("Remove: check a is correct ", e1, list1.get(0));
+		assertEquals("Remove: check a is correct ", (Integer)209, list1.get(1));
+		assertEquals("Remove: check a is correct ", e2, list1.get(2));
+
+		try {
+			list1.add(-1, 2);
+			fail("Adding an element in low index");			
+		} catch (Exception e) {
+		}
+
+		try {
+			list1.add(list1.size() + 1, 0);
+			fail("Adding an element in high index");			
+		} catch (Exception e) {
+		}
+
+		try {
+			list1.add(0, null);
+			fail("Adding an element a null element");			
+		} catch (Exception e) {
+		}
+
 	}
 	
 	/** Test setting an element in the list */
 	@Test
 	public void testSet()
 	{
-	    // TODO: implement this test
-	    
+		list1.add(18);
+		assertEquals("Remove: check element 0 is correct ", (Integer)18, list1.get(list1.size() - 1));
+		list1.set(list1.size() - 1, 20);
+		assertEquals("Remove: check element 0 is correct ", (Integer)20, list1.get(list1.size() - 1));
+
+		try {
+			list1.set(-1, 20);
+			fail("Adding an element in low index");			
+		} catch (Exception e) {
+		}
+		
+		try {
+			list1.set(list1.size(), 20);
+			fail("Adding an element in high index");			
+		} catch (Exception e) {
+		}
 	}
 	
 	

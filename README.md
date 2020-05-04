@@ -1,4 +1,5 @@
 /-------------------------------------------------------------------------
+
 / Starter Code and GUI Application for Course 2 in the
 / Java Programming: Object Oriented Design of 
 / Data Structures Specialization:

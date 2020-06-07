@@ -1,6 +1,7 @@
 package spelling;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,8 +40,26 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	 */
 	public boolean addWord(String word)
 	{
-	    //TODO: Implement this method.
-	    return false;
+		String newW = word.toLowerCase();
+		TrieNode curr = root;
+		boolean created = false;
+		for (int i = 0; i < newW.length(); ++i) {
+			char c = newW.charAt(i);
+			TrieNode child = curr.getChild(c);			
+			if (child == null) {
+				child = curr.insert(c);
+				created = true;
+			}
+			
+			curr = child;
+		}
+		
+		created = created || !curr.endsWord();
+		if (created) {
+			++size;
+		}
+		curr.setEndsWord(true);
+	    return created;
 	}
 	
 	/** 
@@ -49,8 +68,7 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	 */
 	public int size()
 	{
-	    //TODO: Implement this method
-	    return 0;
+	    return size;
 	}
 	
 	
@@ -59,8 +77,18 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	@Override
 	public boolean isWord(String s) 
 	{
-	    // TODO: Implement this method
-		return false;
+		String newW = s.toLowerCase();
+		TrieNode curr = root;
+		for (int i = 0; i < newW.length(); ++i) {
+			char c = newW.charAt(i);
+			TrieNode child = curr.getChild(c);			
+			if (child == null) {
+				return false;
+			}
+			curr = child;
+		}
+		
+		return curr.endsWord();
 	}
 
 	/** 
@@ -86,7 +114,39 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
      */@Override
      public List<String> predictCompletions(String prefix, int numCompletions) 
      {
-    	 // TODO: Implement this method
+    	 List<String> ans = new LinkedList<String>();
+    	 Queue<TrieNode> queue = new LinkedList<TrieNode>();
+    	 String newW = prefix.toLowerCase();
+    	 TrieNode curr = root;
+    	 for (int i = 0; i < newW.length(); ++i) {
+    		 char c = newW.charAt(i);
+    		 TrieNode child = curr.getChild(c);			
+    		 if (child == null) {
+    			 curr = null;
+    			 break;
+    		 }
+    		 curr = child;
+ 		}
+    	 if (curr == null)
+    		 return ans;
+
+    	 queue.add(curr);
+    	 while (!queue.isEmpty()) {
+    		 curr = queue.peek();
+    		 queue.poll();
+    		 if (curr.endsWord()) {
+    			 ans.add(curr.getText());
+    		 }
+    		 if (ans.size() == numCompletions) {
+    			 break;
+    		 }
+    		 
+    		 Set<Character> children = curr.getValidNextCharacters();
+    		 
+    		 for (Character c : children) {
+    			 queue.add(curr.getChild(c));
+    		 }
+    	 }
     	 // This method should implement the following algorithm:
     	 // 1. Find the stem in the trie.  If the stem does not appear in the trie, return an
     	 //    empty list
@@ -101,7 +161,7 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
     	 //       Add all of its child nodes to the back of the queue
     	 // Return the list of completions
     	 
-         return null;
+         return ans;
      }
 
  	// For debugging
